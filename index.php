@@ -12,8 +12,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     if (empty($content)) {
         $error = '请输入文本内容';
-    } elseif ($expireHours > 24 || $expireHours < 1) {
-        $error = '过期时间必须在1-24小时之间';
+    } elseif ($expireHours > 72 || $expireHours < 1) {
+        $error = '过期时间必须在1-72小时之间';
     } elseif ($maxViews < 1) {
         $error = '访问次数必须大于0';
     } else {
@@ -512,7 +512,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 <div class="form-group">
                     <label for="expire_hours">过期时间（小时）</label>
-                    <input type="number" id="expire_hours" name="expire_hours" value="<?php echo isset($_POST['expire_hours']) ? htmlspecialchars($_POST['expire_hours']) : '24'; ?>" min="1" max="24" required>
+                    <input type="number" id="expire_hours" name="expire_hours" value="<?php echo isset($_POST['expire_hours']) ? htmlspecialchars($_POST['expire_hours']) : '24'; ?>" min="1" max="72" required>
                 </div>
             </div>
             
