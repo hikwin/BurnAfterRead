@@ -1,0 +1,16 @@
+# 启用错误报告（开发环境）
+# php_flag display_errors on
+# php_value error_reporting E_ALL
+
+# 设置默认字符集
+AddDefaultCharset UTF-8
+
+# 防止目录列表
+Options -Indexes
+
+# 安全设置
+<FilesMatch "\.(db|sqlite|sqlite3)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
