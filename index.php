@@ -41,11 +41,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
         $db = initDatabase();
 
-        
-        
+        // 检查是否使用短提取码
+        $useShortCode = isset($_POST['use_short_code']) && $_POST['use_short_code'] === '1';
+        $codeLength = $useShortCode ? 4 : 8; // 默认8位，短码4位
+
         // 生成唯一提取码
         do {
-            $code = generateCode();
+            $code = generateCode($codeLength);
             $stmt = $db->prepare("SELECT id FROM messages WHERE code = ?");
             $stmt->bindValue(1, $code, SQLITE3_TEXT);
             $result = $stmt->execute();
@@ -66,7 +68,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindValue(4, $expiresAt, SQLITE3_TEXT);
         
         if ($stmt->execute()) {
-            $baseUrl = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http') . 
+            $isHttps = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') || 
+                       (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ||
+                       (isset($_SERVER['HTTP_X_FORWARDED_SSL']) && $_SERVER['HTTP_X_FORWARDED_SSL'] === 'on');
+            $baseUrl = ($isHttps ? 'https' : 'http') . 
                        '://' . $_SERVER['HTTP_HOST'] . rtrim(dirname($_SERVER['PHP_SELF']), '/\\');
             $viewUrl = $baseUrl . '/view.php?code=' . $code;
             $message = "消息创建成功！";
@@ -380,6 +385,67 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-top: 20px;
             font-size: 13px;
         }
+        /* Toggle Switch CSS */
+        .toggle-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: #374151;
+            font-weight: 500;
+        }
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e5e7eb;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        input:checked + .slider {
+            background-color: #0ea5e9;
+        }
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+        .short-code-warning {
+            display: none;
+            font-size: 12px;
+            color: #b45309;
+            background: #fffbeb;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #fef3c7;
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
@@ -528,6 +594,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="modal-overlay" id="captchaModal" aria-hidden="true">
             <div class="modal" role="dialog" aria-modal="true" aria-labelledby="captchaTitle" tabindex="-1">
                 <div class="modal-header" id="captchaTitle">验证身份</div>
+                
+                <div class="toggle-wrapper">
+                    <span>使用短提取码 (4位)</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="shortCodeSwitch">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="short-code-warning" id="shortCodeWarning">
+                    ⚠️ <strong>注意：</strong> 短提取码容易被暴力破解，仅建议用于非敏感、公开分享的消息。敏感内容请务必保持关闭。
+                </div>
+
                 <div class="captcha-area">
                     <div class="captcha-img"><img id="captchaImage" alt="captcha" style="max-width:100%;max-height:100%;display:block" /></div>
                     <button type="button" class="btn-sm" id="refreshCaptcha">刷新验证码</button>
@@ -573,14 +651,29 @@ document.getElementById('refreshCaptcha')?.addEventListener('click', function(){
     loadCaptcha();
     document.getElementById('captchaInput').value = '';
 });
+
+// Toggle Switch Logic
+document.getElementById('shortCodeSwitch')?.addEventListener('change', function(){
+    var warning = document.getElementById('shortCodeWarning');
+    if (this.checked) {
+        warning.style.display = 'block';
+    } else {
+        warning.style.display = 'none';
+    }
+});
+
 document.getElementById('confirmCreate')?.addEventListener('click', function(){
     var token = getCookie('captcha_t');
     var input = document.getElementById('captchaInput').value;
+    var useShortCode = document.getElementById('shortCodeSwitch').checked ? '1' : '0';
+    
     if (!token || !input) { return; }
     var form = document.querySelector('form[method="POST"]');
     var t = document.createElement('input'); t.type='hidden'; t.name='captcha_token'; t.value=token;
     var i = document.createElement('input'); i.type='hidden'; i.name='captcha_input'; i.value=input;
-    form.appendChild(t); form.appendChild(i);
+    var s = document.createElement('input'); s.type='hidden'; s.name='use_short_code'; s.value=useShortCode;
+    
+    form.appendChild(t); form.appendChild(i); form.appendChild(s);
     form.submit();
 });
 
