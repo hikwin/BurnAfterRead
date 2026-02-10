@@ -89,171 +89,245 @@ if (rand(1, 10) === 1) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>查看消息 - 阅读后即焚</title>
+    <title>查看消息 | BurnAfterRead</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --input-bg: #f8fafc;
+            --radius-input: 8px;
+            --radius-card: 16px;
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
         }
-        
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: #f3f4f6;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg-gradient);
             min-height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
-            padding: 20px;
-            color: #111827;
+            justify-content: center;
+            padding: 24px;
+            color: var(--text-main);
         }
-        
+
         .container {
-            background: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(17, 24, 39, 0.08);
-            padding: 32px;
-            max-width: 640px;
             width: 100%;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
         }
         
-        h1 {
-            color: #111827;
-            margin-bottom: 24px;
-            font-size: 28px;
-            letter-spacing: -0.02em;
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
         }
-        
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-lg);
+            padding: 32px;
+            border: 1px solid rgba(255,255,255,0.7);
+        }
+
         .message-content {
-            background: #f9fafb;
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            padding: 16px;
-            margin-bottom: 16px;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-input);
+            padding: 20px;
+            margin-bottom: 24px;
             white-space: pre-wrap;
             word-break: break-word;
-            font-size: 16px;
-            line-height: 1.7;
-            min-height: 100px;
+            font-size: 15px;
+            line-height: 1.6;
+            min-height: 120px;
+            color: var(--text-main);
+            font-family: inherit;
         }
-        
-        .error {
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+
+        .alert {
+            padding: 16px;
+            border-radius: var(--radius-input);
+            margin-bottom: 24px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
         }
-        
-        .warning {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            color: #856404;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
+
+        .alert-error {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fee2e2;
         }
+
+        .alert-warning {
+            background: #fffbeb;
+            color: #b45309;
+            border: 1px solid #fef3c7;
+        }
+
         .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; color: #333; font-weight: 500; }
+        label { display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px; }
+        
         input[type="text"] {
             width: 100%;
             padding: 12px;
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-input);
+            background: var(--input-bg);
+            transition: all 0.2s;
             font-size: 14px;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            background: #f9fafb;
         }
+        
         input[type="text"]:focus {
             outline: none;
-            border-color: #0ea5e9;
-            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
-            background: #ffffff;
+            border-color: var(--primary-color);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
-        
+
         .btn {
-            background: #0ea5e9;
-            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            background: var(--primary-color);
+            color: white;
             border: none;
-            padding: 12px 20px;
-            border-radius: 10px;
-            font-size: 14px;
+            border-radius: var(--radius-input);
             font-weight: 600;
+            font-size: 14px;
             cursor: pointer;
+            transition: all 0.2s;
             text-decoration: none;
-            display: inline-block;
-            transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
-            margin-right: 10px;
-            margin-top: 10px;
+            margin-right: 12px;
         }
-        
+
         .btn:hover {
+            background: var(--primary-hover);
             transform: translateY(-1px);
-            background: #0284c7;
-            box-shadow: 0 8px 16px rgba(2, 132, 199, 0.2);
         }
-        
+
         .btn-secondary {
-            background: #6b7280;
+            background: #fff;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
         }
-        
+
         .btn-secondary:hover {
-            box-shadow: 0 8px 16px rgba(107, 114, 128, 0.2);
+            background: #f8fafc;
+            color: var(--text-main);
+            border-color: #cbd5e1;
         }
-        
+
         #qrcode {
-            margin-top: 20px;
-            text-align: center;
+            margin-top: 24px;
             display: none;
+            justify-content: center;
+        }
+        #qrcode img, #qrcode canvas {
+            padding: 8px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
         }
         
-        #qrcode canvas, #qrcode img {
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            padding: 10px;
-            background: #ffffff;
+        .action-bar {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        @media (max-width: 600px) {
+           .card { padding: 24px; }
+           .action-bar { flex-direction: column; }
+           .btn { width: 100%; margin-right: 0; margin-bottom: 12px; }
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1>📖 查看消息</h1>
+        <div class="header">
+            <h1>📦 查看消息</h1>
+        </div>
         
-        <?php if ($error): ?>
-            <div class="error"><?php echo htmlspecialchars($error); ?></div>
-            <div class="form-group">
-                <label for="codeInput">输入提取码</label>
-                <input type="text" id="codeInput" placeholder="例如: abcde">
-            </div>
-            <button class="btn" onclick="openWithCode()">打开消息</button>
-            <a href="index.php" class="btn btn-secondary">返回首页</a>
-        <?php elseif ($content): ?>
-            <?php if ($maxViewsReached || $expired): ?>
-                <div class="warning">⚠️ 此消息已被销毁</div>
-            <?php else: ?>
-                <?php if ($maxViewsInfo === 1): ?>
-                    <div class="warning">⚠️ 此消息为一次性查看，关闭页面后将无法再次访问</div>
+        <div class="card">
+            <?php if ($error): ?>
+                <div class="alert alert-error">⚠️ <?php echo htmlspecialchars($error); ?></div>
+                
+                <div class="form-group">
+                    <label for="codeInput">请输入提取码</label>
+                    <input type="text" id="codeInput" placeholder="例如: wXyZ1234" value="<?php echo htmlspecialchars($code); ?>">
+                </div>
+                <div class="action-bar">
+                    <button class="btn" onclick="openWithCode()">查看消息</button>
+                    <a href="index.php" class="btn btn-secondary">返回首页</a>
+                </div>
+
+            <?php elseif ($content): ?>
+                
+                <?php if ($maxViewsReached || $expired): ?>
+                    <div class="alert alert-warning">⚠️ 此消息由于达到限制已被销毁</div>
                 <?php else: ?>
-                    <div class="warning">⚠️ 此消息可再访问 <?php echo htmlspecialchars($remainingViewsInfo); ?> 次，过期时间：<?php echo htmlspecialchars($expiresAtInfo); ?></div>
+                    <?php if ($maxViewsInfo === 1): ?>
+                        <div class="alert alert-warning">⚠️ 警告：这是本消息最后一次显示。关闭页面后将无法再次查看。</div>
+                    <?php else: ?>
+                        <div class="alert alert-warning" style="font-size: 13px;">
+                            ⚠️ 剩余查看次数: <?php echo htmlspecialchars($remainingViewsInfo); ?> 次 · 过期时间: <?php echo htmlspecialchars($expiresAtInfo); ?>
+                        </div>
+                    <?php endif; ?>
                 <?php endif; ?>
+                
+                <div class="message-content"><?php echo htmlspecialchars($content); ?></div>
+                
+                <div class="action-bar">
+                    <button class="btn btn-secondary" onclick="generateQRCode()">生成二维码</button>
+                    <button class="btn btn-secondary" onclick="copyContent()">复制内容</button>
+                    <a href="index.php" class="btn">创建新消息</a>
+                </div>
+                
+                <div id="qrcode"></div>
+                
+            <?php else: ?>
+                <div class="form-group">
+                    <label for="codeInput">输入提取码</label>
+                    <input type="text" id="codeInput" placeholder="请输入8位或4位提取码">
+                </div>
+                <div class="action-bar">
+                    <button class="btn" onclick="openWithCode()">打开消息</button>
+                    <a href="index.php" class="btn btn-secondary">返回首页</a>
+                </div>
             <?php endif; ?>
-            
-            <div class="message-content"><?php echo htmlspecialchars($content); ?></div>
-            
-            <button class="btn" onclick="generateQRCode()">生成二维码</button>
-            <a href="index.php" class="btn btn-secondary">返回首页</a>
-            
-            <div id="qrcode"></div>
-        <?php else: ?>
-            <div class="form-group">
-                <label for="codeInput">输入提取码</label>
-                <input type="text" id="codeInput" placeholder="例如: abcde">
-            </div>
-            <button class="btn" onclick="openWithCode()">打开消息</button>
-            <a href="index.php" class="btn btn-secondary">返回首页</a>
-        <?php endif; ?>
+        </div>
+        
+        <div style="text-align: center; margin-top: 32px; color: #94a3b8; font-size: 12px;">
+            &copy; <?php echo date('Y'); ?> BurnAfterRead
+        </div>
     </div>
     
     <script>
@@ -261,30 +335,22 @@ if (rand(1, 10) === 1) {
             const currentUrl = window.location.href;
             const qrcodeDiv = document.getElementById('qrcode');
             
-            if (qrcodeDiv.style.display === 'none' || qrcodeDiv.style.display === '') {
-                qrcodeDiv.innerHTML = '<p style="margin-bottom: 10px; color: #6b7280;">扫描二维码访问此消息</p>';
-                qrcodeDiv.style.display = 'block';
-                
-                const holder = document.createElement('div');
-                qrcodeDiv.appendChild(holder);
-                
-                if (typeof QRCode !== 'undefined') {
-                    new QRCode(holder, {
-                        text: currentUrl,
-                        width: 256,
-                        height: 256,
-                        colorDark: '#111827',
-                        colorLight: '#ffffff',
-                        correctLevel: QRCode.CorrectLevel.M
-                    });
-                } else {
-                    qrcodeDiv.innerHTML = '<p style="color: #ef4444;">二维码库未加载</p>';
-                }
-            } else {
+            if (qrcodeDiv.style.display === 'flex') {
                 qrcodeDiv.style.display = 'none';
                 qrcodeDiv.innerHTML = '';
+            } else {
+                qrcodeDiv.style.display = 'flex';
+                new QRCode(qrcodeDiv, {
+                    text: currentUrl,
+                    width: 180,
+                    height: 180,
+                    colorDark: '#1e293b',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.M
+                });
             }
         }
+        
         function openWithCode() {
             const input = document.getElementById('codeInput');
             const code = (input && input.value || '').trim();
@@ -292,7 +358,26 @@ if (rand(1, 10) === 1) {
                 window.location.href = 'view.php?code=' + encodeURIComponent(code);
             }
         }
+
+        function copyContent() {
+            const content = document.querySelector('.message-content').innerText;
+            navigator.clipboard.writeText(content).then(() => {
+                alert('内容已复制到剪贴板');
+            }).catch(err => {
+                const ta = document.createElement('textarea');
+                ta.value = content;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                alert('内容已复制到剪贴板');
+            });
+        }
+        
+        // Enter key support
+        document.getElementById('codeInput')?.addEventListener('keyup', function(e) {
+            if (e.key === 'Enter') openWithCode();
+        });
     </script>
 </body>
 </html>
-

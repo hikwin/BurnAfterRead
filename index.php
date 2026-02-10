@@ -103,606 +103,629 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>阅读后即焚 - 匿名消息</title>
+    <title>阅后即焚 - 安全消息传输</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --input-bg: #f8fafc;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+            --radius-input: 8px;
+            --radius-card: 16px;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
         }
-        
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            background: #f3f4f6;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg-gradient);
             min-height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
-            padding: 20px;
-            color: #111827;
+            justify-content: center;
+            padding: 24px;
+            color: var(--text-main);
         }
-        
+
         .container {
-            background: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(17, 24, 39, 0.08);
-            padding: 32px;
-            max-width: 640px;
             width: 100%;
+            max-width: 580px;
+            margin: auto;
         }
-        
-        h1 {
-            color: #111827;
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-main);
             margin-bottom: 8px;
-            font-size: 28px;
-            letter-spacing: -0.02em;
+            background: linear-gradient(to right, #4f46e5, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
         }
-        
-        .subtitle {
-            color: #6b7280;
-            margin-bottom: 24px;
+
+        .header p {
+            color: var(--text-secondary);
             font-size: 14px;
         }
-        
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-lg);
+            padding: 32px;
+            border: 1px solid rgba(255,255,255,0.7);
+        }
+
+        /* Forms */
         .form-group {
             margin-bottom: 20px;
         }
-        
+
         label {
             display: block;
-            margin-bottom: 8px;
-            color: #333;
+            margin-bottom: 6px;
             font-weight: 500;
+            font-size: 14px;
+            color: var(--text-main);
         }
-        
+
         textarea {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-input);
             font-size: 14px;
             font-family: inherit;
             resize: vertical;
-            min-height: 150px;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            background: #f9fafb;
+            min-height: 140px;
+            background: var(--input-bg);
+            transition: all 0.2s;
+            line-height: 1.6;
         }
-        
+
         textarea:focus {
             outline: none;
-            border-color: #0ea5e9;
-            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
-            background: #ffffff;
+            border-color: var(--primary-color);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
-        
+
+        textarea::placeholder {
+            color: #94a3b8;
+        }
+
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 16px;
         }
-        
-        input[type="number"] {
+
+        input[type="number"], input[type="text"] {
             width: 100%;
             padding: 12px;
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-input);
+            background: var(--input-bg);
+            transition: all 0.2s;
             font-size: 14px;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            background: #f9fafb;
         }
-        
-        input[type="number"]:focus {
+
+        input[type="number"]:focus, input[type="text"]:focus {
             outline: none;
-            border-color: #0ea5e9;
-            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2);
-            background: #ffffff;
+            border-color: var(--primary-color);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
-        
+
+        /* Buttons */
         .btn {
-            background: #0ea5e9;
-            color: #ffffff;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             width: 100%;
-            display: inline-block;
-            transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+            padding: 12px 24px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--radius-input);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
         }
-        
+
         .btn:hover {
+            background: var(--primary-hover);
             transform: translateY(-1px);
-            background: #0284c7;
-            box-shadow: 0 8px 16px rgba(2, 132, 199, 0.2);
+            box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
         }
-        
+
         .btn:active {
             transform: translateY(0);
-            background: #0ea5e9;
-            box-shadow: none;
         }
-        .key-press {
-            transform: scale(0.98);
-            box-shadow: none !important;
-            filter: brightness(0.95);
-        }
+
         .btn-secondary {
-            background: #6b7280;
-            color: #ffffff;
+            background: #fff;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
         }
+
         .btn-secondary:hover {
-            background: #4b5563;
-            box-shadow: 0 8px 16px rgba(75, 85, 99, 0.2);
+            background: #f8fafc;
+            color: var(--text-main);
+            border-color: #cbd5e1;
+            box-shadow: var(--shadow-sm);
         }
+
         .btn-row {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 2fr 1fr;
             gap: 12px;
-            margin-top: 10px;
+            margin-top: 24px;
         }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+        }
+
+        /* Success / Error */
+        .alert {
+            padding: 16px;
+            border-radius: var(--radius-input);
+            margin-bottom: 24px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
+
+        .alert-success {
+            background: #ecfdf5;
+            color: #065f46;
+            border: 1px solid #d1fae5;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fee2e2;
+        }
+
+        .alert-info {
+            background: #eff6ff;
+            color: #1e40af;
+            border: 1px solid #dbeafe;
+            margin-top: 24px;
+            font-size: 13px;
+        }
+
+        /* Result Box */
+        .result-box {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin: 16px 0;
+            padding: 12px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            word-break: break-all;
+            color: #4f46e5;
+            text-align: left;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* Modal */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.45);
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 100;
             display: none;
-            align-items: center;
             justify-content: center;
-            z-index: 1000;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.2s ease;
         }
+
+        .modal-overlay.active {
+            opacity: 1;
+        }
+
         .modal {
-            background: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(17, 24, 39, 0.25);
-            width: 520px;
-            max-width: 92vw;
-            padding: 20px;
+            background: #fff;
+            width: 90%;
+            max-width: 440px;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            transform: scale(0.95);
+            transition: transform 0.2s ease;
         }
+
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+
         .modal-header {
             font-size: 18px;
-            font-weight: 600;
-            color: #111827;
-            margin-bottom: 12px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-align: center;
         }
-        .captcha-area {
-            display: grid;
-            grid-template-columns: 1fr auto;
+
+        .captcha-row {
+            display: flex;
             gap: 12px;
-            align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
-        .captcha-img {
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            background: #f9fafb;
-            width: 100%;
-            height: 120px;
+
+        .captcha-img-container {
+            flex: 1;
+            height: 80px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
-        }
-        .modal-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: 10px;
-        }
-        .captcha-input {
-            width: 100%;
-            padding: 12px 14px;
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            letter-spacing: 0.06em;
-            background: linear-gradient(180deg, #f9fafb 0%, #ffffff 100%);
-            box-shadow: inset 0 1px 2px rgba(17, 24, 39, 0.06);
-            transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-        }
-        .captcha-input:focus {
-            outline: none;
-            border-color: #0ea5e9;
-            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.2), inset 0 1px 2px rgba(17, 24, 39, 0.08);
-            background: #ffffff;
-        }
-        .captcha-input::placeholder {
-            color: #9ca3af;
-        }
-        
-        .message {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            white-space: pre-line;
-            word-break: break-all;
-        }
-        .share {
-            margin-bottom: 20px;
-        }
-        .share-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            word-break: break-all;
-        }
-        .share-row a {
-            color: #0ea5e9;
-            text-decoration: none;
-        }
-        .share-row a:hover {
-            text-decoration: underline;
-        }
-        .btn-sm {
-            background: #0ea5e9;
-            color: #ffffff;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
             cursor: pointer;
-            display: inline-block;
-            transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
         }
-        .btn-sm:hover {
-            transform: translateY(-1px);
-            background: #0284c7;
-            box-shadow: 0 6px 12px rgba(2, 132, 199, 0.2);
+
+        .captcha-img-container img {
+            max-width: 100%;
+            max-height: 100%;
         }
-        #qrcode-share {
-            margin-top: 12px;
-            text-align: center;
-            display: none;
-        }
-        #qrcode-share canvas, #qrcode-share img {
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            padding: 10px;
-            background: #ffffff;
-        }
-        
-        .error {
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-        
-        .info {
-            background: #e7f3ff;
-            border: 1px solid #b3d9ff;
-            color: #004085;
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 20px;
-            font-size: 13px;
-        }
-        /* Toggle Switch CSS */
-        .toggle-wrapper {
+
+        /* Switch */
+        .switch-row {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            margin-bottom: 12px;
-            font-size: 14px;
-            color: #374151;
-            font-weight: 500;
+            align-items: center;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 16px;
         }
-        .toggle-switch {
+        
+        .switch {
             position: relative;
             display: inline-block;
-            width: 44px;
-            height: 24px;
+            width: 40px;
+            height: 22px;
         }
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
+        
+        .switch input { opacity: 0; width: 0; height: 0; }
+        
         .slider {
             position: absolute;
             cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #e5e7eb;
-            transition: .4s;
-            border-radius: 24px;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #cbd5e1;
+            transition: .3s;
+            border-radius: 34px;
         }
+        
         .slider:before {
             position: absolute;
             content: "";
-            height: 18px;
-            width: 18px;
+            height: 16px;
+            width: 16px;
             left: 3px;
             bottom: 3px;
             background-color: white;
-            transition: .4s;
+            transition: .3s;
             border-radius: 50%;
             box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
+        
         input:checked + .slider {
-            background-color: #0ea5e9;
+            background-color: var(--primary-color);
         }
+        
         input:checked + .slider:before {
-            transform: translateX(20px);
+            transform: translateX(18px);
         }
-        .short-code-warning {
+
+        #qrcode-container {
+            margin-top: 16px;
             display: none;
-            font-size: 12px;
-            color: #b45309;
-            background: #fffbeb;
-            padding: 8px 12px;
+            justify-content: center;
+        }
+        #qrcode-container img, #qrcode-container canvas {
+            padding: 8px;
+            background: white;
+            border: 1px solid var(--border-color);
             border-radius: 8px;
-            border: 1px solid #fef3c7;
-            margin-bottom: 12px;
-            line-height: 1.5;
+        }
+
+        @media (max-width: 640px) {
+            body { padding: 16px; }
+            .card { padding: 24px; }
+            .form-row { grid-template-columns: 1fr; }
+            .btn-row { grid-template-columns: 1fr; }
+            .btn-secondary { margin-top: 12px; order: 1; }
         }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>🔥 阅读后即焚</h1>
-        <p class="subtitle">创建匿名消息，设置访问次数和过期时间</p>
-        
+
+<div class="container">
+    <div class="header">
+        <h1>BurnAfterRead</h1>
+        <p>创建具有访问限制和过期时间的加密消息</p>
+    </div>
+
+    <div class="card">
         <?php if ($message): ?>
-            <div class="message"><?php echo htmlspecialchars($message); ?></div>
-            <?php if (isset($viewUrl)): ?>
-                <div class="share">
-                    <div class="share-row">
-                        <span>访问链接:</span>
-                        <a href="<?php echo htmlspecialchars($viewUrl); ?>" target="_blank" id="access-link"><?php echo htmlspecialchars($viewUrl); ?></a>
-                        <button type="button" class="btn-sm" id="copy-link-btn">复制</button>
-                        <button type="button" class="btn-sm" id="gen-qr-btn">生成二维码</button>
+            <div class="alert alert-success">
+                <div style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">🎉 <?php echo htmlspecialchars($message); ?></div>
+                <div style="font-size: 13px; opacity: 0.8;">请将下方链接分享给接收人</div>
+                
+                <?php if (isset($viewUrl)): ?>
+                    <div class="result-box" id="result-url"><?php echo htmlspecialchars($viewUrl); ?></div>
+                    
+                    <div class="actions">
+                        <button class="btn btn-sm" id="btn-copy-url" style="width: auto; height: 39px; margin: 0 !important; order: 0 !important; border: 1px solid transparent;">复制链接</button>
+                        <button class="btn btn-sm btn-secondary" id="btn-show-qr" style="width: auto; height: 39px; margin: 0 !important; order: 0 !important;">二维码</button>
                     </div>
-                    <div class="share-row">
-                        <span>访问码:</span>
-                        <span id="access-code"><?php echo htmlspecialchars($code); ?></span>
-                        <button type="button" class="btn-sm" id="copy-code-btn">复制</button>
+
+                    <div style="margin-top: 20px; padding-top: 16px; border-top: 1px dashed #d1fae5; font-size: 13px; text-align: center;">
+                        <span style="color: #64748b;">提取码: </span>
+                        <strong id="result-code" style="color: var(--text-main); font-family: monospace; font-size: 15px; margin: 0 4px;"><?php echo htmlspecialchars($code); ?></strong>
+                        <button class="btn-sm btn-secondary" id="btn-copy-code" style="border:none; background: transparent; color: var(--primary-color); cursor: pointer; text-decoration: underline; padding: 0;">复制</button>
                     </div>
-                    <div id="qrcode-share"></div>
+
+                    <div id="qrcode-container"></div>
+                <?php endif; ?>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="index.php" class="btn btn-secondary" style="display: inline-block; width: auto;">创建新消息</a>
+            </div>
+
+            <script>
+                function copyText(text, btn) {
+                    if (navigator.clipboard) {
+                        navigator.clipboard.writeText(text).then(() => showCopied(btn));
+                    } else {
+                        const el = document.createElement('textarea');
+                        el.value = text;
+                        document.body.appendChild(el);
+                        el.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(el);
+                        showCopied(btn);
+                    }
+                }
+                function showCopied(btn) {
+                    if (!btn.dataset.originalText) {
+                        btn.dataset.originalText = btn.innerText;
+                    }
+                    btn.innerText = '已复制!';
+                    
+                    if (btn.dataset.timer) {
+                        clearTimeout(btn.dataset.timer);
+                    }
+                    
+                    btn.dataset.timer = setTimeout(() => {
+                        btn.innerText = btn.dataset.originalText;
+                        delete btn.dataset.timer; // Clean up
+                    }, 2000);
+                }
+
+                document.getElementById('btn-copy-url').onclick = function() {
+                    copyText(document.getElementById('result-url').innerText, this);
+                };
+                document.getElementById('btn-copy-code').onclick = function() {
+                    copyText(document.getElementById('result-code').innerText, this);
+                };
+                document.getElementById('btn-show-qr').onclick = function() {
+                    const qr = document.getElementById('qrcode-container');
+                    if (qr.style.display === 'flex') {
+                        qr.style.display = 'none';
+                    } else {
+                        qr.style.display = 'flex';
+                        if (qr.innerHTML === '') {
+                            new QRCode(qr, {
+                                text: '<?php echo htmlspecialchars($viewUrl ?? '', ENT_QUOTES); ?>',
+                                width: 160,
+                                height: 160
+                            });
+                        }
+                    }
+                };
+            </script>
+
+        <?php else: ?>
+            
+            <?php if ($error): ?>
+                <div class="alert alert-error">
+                    ⚠️ <?php echo htmlspecialchars($error); ?>
                 </div>
-                <script>
-                    (function(){
-                        var btn = document.getElementById('copy-link-btn');
-                        if (!btn) return;
-                        btn.addEventListener('click', function(){
-                            var text = document.getElementById('access-link').textContent;
-                            if (navigator.clipboard && navigator.clipboard.writeText) {
-                                navigator.clipboard.writeText(text).then(function(){
-                                    btn.textContent = '已复制';
-                                    setTimeout(function(){ btn.textContent = '复制'; }, 1500);
-                                }, function(){
-                                    var textarea = document.createElement('textarea');
-                                    textarea.value = text;
-                                    document.body.appendChild(textarea);
-                                    textarea.select();
-                                    try { document.execCommand('copy'); } catch (e) {}
-                                    document.body.removeChild(textarea);
-                                    btn.textContent = '已复制';
-                                    setTimeout(function(){ btn.textContent = '复制'; }, 1500);
-                                });
-                            } else {
-                                var textarea = document.createElement('textarea');
-                                textarea.value = text;
-                                document.body.appendChild(textarea);
-                                textarea.select();
-                                try { document.execCommand('copy'); } catch (e) {}
-                                document.body.removeChild(textarea);
-                                btn.textContent = '已复制';
-                                setTimeout(function(){ btn.textContent = '复制'; }, 1500);
-                            }
-                        });
-
-                        var codeBtn = document.getElementById('copy-code-btn');
-                        if (codeBtn) {
-                            codeBtn.addEventListener('click', function(){
-                                var text = document.getElementById('access-code').textContent;
-                                if (navigator.clipboard && navigator.clipboard.writeText) {
-                                    navigator.clipboard.writeText(text).then(function(){
-                                        codeBtn.textContent = '已复制';
-                                        setTimeout(function(){ codeBtn.textContent = '复制'; }, 1500);
-                                    }, function(){
-                                        var textarea = document.createElement('textarea');
-                                        textarea.value = text;
-                                        document.body.appendChild(textarea);
-                                        textarea.select();
-                                        try { document.execCommand('copy'); } catch (e) {}
-                                        document.body.removeChild(textarea);
-                                        codeBtn.textContent = '已复制';
-                                        setTimeout(function(){ codeBtn.textContent = '复制'; }, 1500);
-                                    });
-                                } else {
-                                    var textarea = document.createElement('textarea');
-                                    textarea.value = text;
-                                    document.body.appendChild(textarea);
-                                    textarea.select();
-                                    try { document.execCommand('copy'); } catch (e) {}
-                                    document.body.removeChild(textarea);
-                                    codeBtn.textContent = '已复制';
-                                    setTimeout(function(){ codeBtn.textContent = '复制'; }, 1500);
-                                }
-                            });
-                        }
-
-                        var qrBtn = document.getElementById('gen-qr-btn');
-                        var qrDiv = document.getElementById('qrcode-share');
-                        if (qrBtn && qrDiv) {
-                            var viewUrl = '<?php echo htmlspecialchars($viewUrl, ENT_QUOTES); ?>';
-                            qrBtn.addEventListener('click', function(){
-                                qrDiv.style.display = 'block';
-                                qrDiv.innerHTML = '';
-                                if (typeof QRCode !== 'undefined') {
-                                    new QRCode(qrDiv, {
-                                        text: viewUrl,
-                                        width: 256,
-                                        height: 256,
-                                        colorDark: '#111827',
-                                        colorLight: '#ffffff',
-                                        correctLevel: QRCode.CorrectLevel.M
-                                    });
-                                } else {
-                                    qrDiv.innerHTML = '<p style="color: #ef4444;">二维码库未加载</p>';
-                                }
-                            });
-                        }
-                    })();
-                </script>
             <?php endif; ?>
-        <?php endif; ?>
-        
-        <?php if ($error): ?>
-            <div class="error"><?php echo htmlspecialchars($error); ?></div>
-        <?php endif; ?>
-        
-        <form method="POST" action="">
-            <div class="form-group">
-                <label for="content">消息内容 *</label>
-                <textarea id="content" name="content" required placeholder="输入您要发送的文本内容..."><?php echo isset($_POST['content']) ? htmlspecialchars($_POST['content']) : ''; ?></textarea>
-            </div>
-            
-            <div class="form-row">
+
+            <form method="POST" action="">
                 <div class="form-group">
-                    <label for="max_views">最大访问次数</label>
-                    <input type="number" id="max_views" name="max_views" value="<?php echo isset($_POST['max_views']) ? htmlspecialchars($_POST['max_views']) : '1'; ?>" min="1" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="expire_hours">过期时间（小时）</label>
-                    <input type="number" id="expire_hours" name="expire_hours" value="<?php echo isset($_POST['expire_hours']) ? htmlspecialchars($_POST['expire_hours']) : '24'; ?>" min="1" max="72" required>
-                </div>
-            </div>
-            
-            <div class="btn-row">
-                <button type="button" class="btn" id="create-btn">创建消息</button>
-                <a href="view.php" class="btn btn-secondary" style="text-align:center;">提取信息</a>
-            </div>
-        </form>
-        
-        <div class="info">
-            <strong>提示：</strong>消息内容在数据库中已加密存储。访问次数用完后或过期后，消息将自动删除。
-        </div>
-        <div class="modal-overlay" id="captchaModal" aria-hidden="true">
-            <div class="modal" role="dialog" aria-modal="true" aria-labelledby="captchaTitle" tabindex="-1">
-                <div class="modal-header" id="captchaTitle">验证身份</div>
-                
-                <div class="toggle-wrapper">
-                    <span>使用短提取码 (4位)</span>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="shortCodeSwitch">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                <div class="short-code-warning" id="shortCodeWarning">
-                    ⚠️ <strong>注意：</strong> 短提取码容易被暴力破解，仅建议用于非敏感、公开分享的消息。敏感内容请务必保持关闭。
+                    <label for="content">消息内容</label>
+                    <textarea id="content" name="content" required placeholder="在此输入需要安全传输的文本信息..."><?php echo isset($_POST['content']) ? htmlspecialchars($_POST['content']) : ''; ?></textarea>
                 </div>
 
-                <div class="captcha-area">
-                    <div class="captcha-img"><img id="captchaImage" alt="captcha" style="max-width:100%;max-height:100%;display:block" /></div>
-                    <button type="button" class="btn-sm" id="refreshCaptcha">刷新验证码</button>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="max_views">允许访问次数</label>
+                        <input type="number" id="max_views" name="max_views" value="<?php echo isset($_POST['max_views']) ? htmlspecialchars($_POST['max_views']) : '1'; ?>" min="1" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="expire_hours">过期时间 (小时)</label>
+                        <input type="number" id="expire_hours" name="expire_hours" value="<?php echo isset($_POST['expire_hours']) ? htmlspecialchars($_POST['expire_hours']) : '24'; ?>" min="1" max="72" required>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="captchaInput">输入验证码</label>
-                    <input type="text" id="captchaInput" class="captcha-input" placeholder="请输入验证码" autocomplete="off" maxlength="6">
+
+                <div class="btn-row">
+                    <button type="button" class="btn" id="create-init-btn">创建加密消息</button>
+                    <a href="view.php" class="btn btn-secondary">提取消息</a>
                 </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn" id="confirmCreate">确认创建</button>
-                    <button type="button" class="btn btn-secondary" id="cancelCreate">取消</button>
-                </div>
+            </form>
+
+            <div class="alert alert-info">
+                🔒 <strong>安全提示：</strong> 所有消息均经过端到端加密存储。一旦达到访问次数或过期时间，数据将被永久物理删除，无法恢复。
             </div>
+
+        <?php endif; ?>
+    </div>
+    
+    <div style="text-align: center; margin-top: 32px; color: #94a3b8; font-size: 12px;">
+        &copy; <?php echo date('Y'); ?> BurnAfterRead · 安全 · 匿名 · 只有一次
+    </div>
+</div>
+
+<!-- CAPTCHA MODAL -->
+<div class="modal-overlay" id="captchaModal">
+    <div class="modal">
+        <div class="modal-header">安全验证</div>
+        
+        <div class="switch-row">
+            <span style="font-size: 14px; font-weight: 500;">使用短提取码 (4位)</span>
+            <label class="switch">
+                <input type="checkbox" id="shortCodeSwitch">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <div id="shortCodeWarning" style="display:none; color: #b45309; background: #fffbeb; padding: 10px; font-size: 12px; margin-bottom: 16px; border-radius: 6px;">
+            ⚠️ 短提取码 (4位) 容易被暴力破解，仅建议用于非敏感内容分享。
+        </div>
+
+        <div class="captcha-row">
+            <div class="captcha-img-container" id="captchaImgBox" title="点击刷新验证码">
+                <img id="captchaImage" src="" alt="验证码">
+            </div>
+            <button type="button" class="btn btn-secondary" style="width: auto; padding: 0 16px;" onclick="loadCaptcha()">刷新</button>
+        </div>
+        
+        <div class="form-group">
+            <input type="text" id="captchaInput" placeholder="输入上图字符" autocomplete="off" maxlength="6" style="text-align: center; font-weight: bold; letter-spacing: 2px;">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px;">
+            <button type="button" class="btn btn-secondary" id="modal-cancel" style="width: 100%; margin: 0 !important; order: 0 !important;">取消</button>
+            <button type="button" class="btn" id="modal-confirm" style="width: 100%; margin: 0 !important; order: 0 !important; border: 1px solid transparent;">确认创建</button>
         </div>
     </div>
+</div>
+
 <script>
-function getCookie(name){
-    var m = document.cookie.match(new RegExp('(^| )'+name+'=([^;]+)'));
-    return m ? decodeURIComponent(m[2]) : '';
-}
-function loadCaptcha(){
-    var img = document.getElementById('captchaImage');
-    img.src = 'captcha.php?ts=' + Date.now();
-}
-document.getElementById('create-btn')?.addEventListener('click', function(){
-    var overlay = document.getElementById('captchaModal');
-    overlay.style.display = 'flex';
-    overlay.setAttribute('aria-hidden', 'false');
-    loadCaptcha();
-    var modal = document.querySelector('#captchaModal .modal');
-    var input = document.getElementById('captchaInput');
-    setTimeout(function(){
-        if (modal) modal.focus();
-        if (input) input.focus();
-    }, 0);
-});
-document.getElementById('cancelCreate')?.addEventListener('click', function(){
-    var overlay = document.getElementById('captchaModal');
-    overlay.style.display = 'none';
-    overlay.setAttribute('aria-hidden', 'true');
-});
-document.getElementById('refreshCaptcha')?.addEventListener('click', function(){
-    loadCaptcha();
-    document.getElementById('captchaInput').value = '';
-});
-
-// Toggle Switch Logic
-document.getElementById('shortCodeSwitch')?.addEventListener('change', function(){
-    var warning = document.getElementById('shortCodeWarning');
-    if (this.checked) {
-        warning.style.display = 'block';
-    } else {
-        warning.style.display = 'none';
+    function getCookie(name){
+        var m = document.cookie.match(new RegExp('(^| )'+name+'=([^;]+)'));
+        return m ? decodeURIComponent(m[2]) : '';
     }
-});
 
-document.getElementById('confirmCreate')?.addEventListener('click', function(){
-    var token = getCookie('captcha_t');
-    var input = document.getElementById('captchaInput').value;
-    var useShortCode = document.getElementById('shortCodeSwitch').checked ? '1' : '0';
-    
-    if (!token || !input) { return; }
-    var form = document.querySelector('form[method="POST"]');
-    var t = document.createElement('input'); t.type='hidden'; t.name='captcha_token'; t.value=token;
-    var i = document.createElement('input'); i.type='hidden'; i.name='captcha_input'; i.value=input;
-    var s = document.createElement('input'); s.type='hidden'; s.name='use_short_code'; s.value=useShortCode;
-    
-    form.appendChild(t); form.appendChild(i); form.appendChild(s);
-    form.submit();
-});
+    function loadCaptcha(){
+        document.getElementById('captchaImage').src = 'captcha.php?ts=' + Date.now();
+    }
 
-document.addEventListener('keydown', function(e){
-    var overlay = document.getElementById('captchaModal');
-    var modal = document.querySelector('#captchaModal .modal');
-    if (!overlay || overlay.style.display !== 'flex') { return; }
-    if (!overlay.contains(document.activeElement)) { return; }
-    if (e.key === 'Enter') {
-        e.preventDefault();
-        e.stopPropagation();
-        var btn = document.getElementById('confirmCreate');
-        if (btn) {
-            btn.classList.add('key-press');
-            setTimeout(function(){ btn.classList.remove('key-press'); }, 150);
-            btn.click();
-        }
-    } else if (e.key === 'Escape') {
-        e.preventDefault();
-        e.stopPropagation();
-        var cancelBtn = document.getElementById('cancelCreate');
-        if (cancelBtn) {
-            cancelBtn.classList.add('key-press');
-            setTimeout(function(){ cancelBtn.classList.remove('key-press'); }, 150);
+    const modal = document.getElementById('captchaModal');
+    const createInitBtn = document.getElementById('create-init-btn');
+    const cancelBtn = document.getElementById('modal-cancel');
+    const confirmBtn = document.getElementById('modal-confirm');
+    const switchEl = document.getElementById('shortCodeSwitch');
+
+    if (createInitBtn) {
+        createInitBtn.addEventListener('click', () => {
+            const content = document.getElementById('content').value.trim();
+            if (!content) {
+                alert('请输入文本内容');
+                return;
+            }
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
+            loadCaptcha();
+            document.getElementById('captchaInput').value = '';
+            document.getElementById('captchaInput').focus();
+        });
+    }
+
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+            setTimeout(() => modal.style.display = 'none', 200);
+        });
+    }
+
+    if (switchEl) {
+        switchEl.addEventListener('change', function() {
+            document.getElementById('shortCodeWarning').style.display = this.checked ? 'block' : 'none';
+        });
+    }
+
+    if (confirmBtn) {
+        confirmBtn.addEventListener('click', () => {
+            const token = getCookie('captcha_t');
+            const input = document.getElementById('captchaInput').value;
+            const useShortCode = switchEl.checked ? '1' : '0';
+
+            if (!token || !input) {
+                alert('请输入验证码');
+                return;
+            }
+
+            const form = document.querySelector('form[method="POST"]');
+            const t = document.createElement('input'); t.type='hidden'; t.name='captcha_token'; t.value=token;
+            const i = document.createElement('input'); i.type='hidden'; i.name='captcha_input'; i.value=input;
+            const s = document.createElement('input'); s.type='hidden'; s.name='use_short_code'; s.value=useShortCode;
+
+            form.appendChild(t);
+            form.appendChild(i);
+            form.appendChild(s);
+            form.submit();
+        });
+    }
+
+    // Modal close on click outside
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
             cancelBtn.click();
         }
-    }
-}, true);
+    });
+
+    // Enter key support in modal
+    document.getElementById('captchaInput')?.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') confirmBtn.click();
+    });
 </script>
+
 </body>
 </html>
-
